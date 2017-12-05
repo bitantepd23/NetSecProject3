@@ -1,10 +1,18 @@
+import java.awt.List;
 import java.math.BigInteger;
 import java.util.Random;
 
 public class main {
 
 	
-	// Added by Corey
+	// Author: Corey
+	/*
+	 * Function: extendedEuclid(BigInteger a, BigInteger b)
+	 * Purpose: to compute the private key based upon the user input public key
+	 * a = ⱷ(n)
+	 * b = e
+	 * returns an array with 3 elements: {gcd, x, y}
+	 */
 	public static BigInteger[] extendedEuclid(BigInteger a, BigInteger b) {	//ax + by = 1
 		
 		//Base Conditions
@@ -50,39 +58,35 @@ public class main {
 	}
 	
     public static void main (String[] args) {
-//    	PrimalityTester primeTester = new PrimalityTester();
     	
-    	BigInteger a = new BigInteger("765248342531398642467465785432165743943253344455582794167");	// (2)
-    	BigInteger b = new BigInteger("5432165743465789432425313986424674657854321657452897663568");// (6)
+    	PrimalityTester primeTester = new PrimalityTester();
     	
-    	BigInteger product = a.multiply(b);
-    	
-    	System.out.println("a = "+a+"\nb = "+b+"\na * b = "+product);
-    	
-    	
+//    	BigInteger a = new BigInteger("765248342531398642467465785432165743943253344455582794167");	// (2)
+//    	BigInteger b = new BigInteger("5432165743465789432425313986424674657854321657452897663568");// (6)
+//    	
+//    	BigInteger product = a.multiply(b);
+//    	
+//    	System.out.println("a = "+a+"\nb = "+b+"\na * b = "+product);
+//    	
+//    	
     	BigInteger p = randBigInt(68);
     	BigInteger q = randBigInt(68);
     	
-    	boolean convertedP = p.isProbablePrime(10);
-    	boolean convertedQ = q.isProbablePrime(10);
-
-    	if (convertedP == false || convertedQ == false) {
-	    	while (convertedP != true) {
-	    		System.out.println("P is composite.\n\tp = "+p);
-	    		p = randBigInt(68);
-	    		convertedP = p.isProbablePrime(10);
-	    	}
-	    	
-	    	while (convertedQ != true) {
-	    		System.out.println("Q is composite.\n\tq = "+q);
-	    		q = randBigInt(68);
-	    		convertedQ = q.isProbablePrime(10);
-	    	}
+    	while (p.isProbablePrime(15) == false || q.isProbablePrime(15) == false) {
+    		p = randBigInt(68);
+    		q = randBigInt(68);
     	}
     	
     	System.out.println("p:\t"+p+"\nq:\t"+q);
+
+    	
+    	
+    	primeTester.millerRabinPrimeTest(q);
 //    	PrimalityTester pTest = new PrimalityTester(p, 10);
 //    	PrimalityTester qTest = new PrimalityTester(q, 10);
+//    	primeTester.printList(primeTester.millerRabinPrimeTest(p));
+//    	primeTester.printList(primeTester.millerRabinPrimeTest(q));
+    	
 
     }
 }
