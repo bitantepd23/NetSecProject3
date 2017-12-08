@@ -1,6 +1,7 @@
-import java.awt.List;
 import java.math.BigInteger;
 import java.util.Random;
+import java.util.Scanner;
+
 
 public class main {
 
@@ -11,56 +12,67 @@ public class main {
 	 * Purpose: to compute the private key based upon the user input public key
 	 * a = ⱷ(n)
 	 * b = e
-	 * returns an array with 3 elements: {gcd, x, y}
+	 * returns lastx which equals d
 	 */
-	public static BigInteger[] extendedEuclid(BigInteger a, BigInteger b) {	//ax + by = 1
-		
+	public static BigInteger extendedEuclid(BigInteger a, BigInteger b) {	//a = e, b = phi(n)
+
 		//Base Conditions
-		BigInteger x = new BigInteger("0");
-		BigInteger y = new BigInteger("1");
-		BigInteger xNext = new BigInteger("1");
-		BigInteger yNext = new BigInteger("0");
-			
-			//Finds the GCD, X, and Y
-		    while( a.longValue() != 0) {
-		        BigInteger q = b.divide(a);
-		        BigInteger r = b.mod(a);						//Saves b%a
-		        BigInteger m = x.subtract(xNext.multiply(q));	//m = x(i-2) - x(i-1)*q
-		        BigInteger n = y.subtract(yNext.multiply(q));	//n = y(i-2) - y(i-1)*q
-			        
-		        b = a;											//b = a
-		        a = r;											//a = b%a
-		        x = xNext;										//x(i) = x(i-1)
-		        y = yNext;										//y(i) = y(i-1)
-		        xNext = m;										//x(i) = x(i-2) - x(i-1)*q
-		        yNext = n;										//y(i) = y(i-2) - y(i-1)*q
-		    }
-			    
-		    BigInteger gcd = b;
-			    
-		    if(gcd.longValue() != 1) {
-		    	return null;
-		    }else {
-		    	BigInteger[] array = new BigInteger[3];
-			    
-		    	array[0] = gcd;
-		    	array[1] = x;
-		    	array[2] = y;
-			    
-		    	return array;
-		    }
-		}
-	
-	public static BigInteger randBigInt(int wordLength) {
-		wordLength *= 4;	// takes word length and multiplies by 4 to get the number of bits required
-		BigInteger randBig = new BigInteger(wordLength, new Random());	
-		return randBig;
+		BigInteger x = BigInteger.valueOf(0);
+		BigInteger y = BigInteger.valueOf(1);
+		BigInteger lastx = BigInteger.valueOf(1);
+		BigInteger lasty = BigInteger.valueOf(0);
+		BigInteger temp;
+		
+        while (!b.equals(BigInteger.ZERO))
+        {
+            BigInteger q = a.divide(b);
+            BigInteger r = a.mod(b);
+ 
+            a = b;
+            b = r;
+ 
+            temp = x;
+            x = lastx.subtract(q.multiply(x));
+            lastx = temp;
+ 
+            temp = y;
+            y = lasty.subtract(q.multiply(y));
+            lasty = temp;            
+        }
+        return lastx;
 	}
+
 	
     public static void main (String[] args) {
     	
     	PrimalityTester primeTester = new PrimalityTester();
     	
+    	Scanner scannerObj = new Scanner(System.in);
+    	
+		System.out.println("Please pick a value for your public key");
+    	int e = scannerObj.nextInt();
+		
+		System.out.println("Enter the number of iterations you would like performed");
+		int userCertainty = scannerObj.nextInt();
+    	
+    	
+//		Scanner userInput = new Scanner(System.in);
+//		System.out.println("Please enter a number");
+//		this.testNumber = userInput.nextLong();
+//		
+//		System.out.println("Enter the number of iterations you would like performed");
+//		this.iterator = userInput.nextInt();
+//		
+//		while (this.iterator < 10) {
+//			System.out.println("Please enter a value of at least 10 iterations");
+//			this.iterator = userInput.nextInt();
+//		}
+//		userInput.close();
+//		primeCheck = this.checkPrimality(this.testNumber, this.iterator);
+//		this.returnAnswer(testNumber, primeCheck);
+    	
+    	
+    	// BigInteger Test
 //    	BigInteger a = new BigInteger("765248342531398642467465785432165743943253344455582794167");	// (2)
 //    	BigInteger b = new BigInteger("5432165743465789432425313986424674657854321657452897663568");// (6)
 //    	
@@ -69,19 +81,27 @@ public class main {
 //    	System.out.println("a = "+a+"\nb = "+b+"\na * b = "+product);
 //    	
 //    	
-    	BigInteger p = randBigInt(68);
-    	BigInteger q = randBigInt(68);
+    	BigInteger p = new BigInteger(272, new Random());
+    	BigInteger q = new BigInteger(272, new Random());
     	
-    	while (p.isProbablePrime(15) == false || q.isProbablePrime(15) == false) {
-    		p = randBigInt(68);
-    		q = randBigInt(68);
+    	while (primeTester.millerRabinPrimeTest(p, userCertainty) == false || 
+    			primeTester.millerRabinPrimeTest(q, userCertainty) == false ||
+    			p.toString().length() < 80 || q.toString().length() < 80) {
+    		if (primeTester.millerRabinPrimeTest(p, userCertainty) == false || p.toString().length() < 80)
+    			p = new BigInteger(272, new Random());
+    		else
+    			q = new BigInteger(272, new Random());
     	}
     	
+    	System.out.println(extendedEuclid(BigInteger.valueOf(42), BigInteger.valueOf(30)));
+    	
+//    	while (p.isProbablePrime(15) == false || q.isProbablePrime(15) == false) {
+//    		p = randBigInt(68);
+//    		q = randBigInt(68);
+//    	}
+    	
     	System.out.println("p:\t"+p+"\nq:\t"+q);
-
-    	
-    	
-    	primeTester.millerRabinPrimeTest(q);
+//    	primeTester.millerRabinPrimeTest(q);
 //    	PrimalityTester pTest = new PrimalityTester(p, 10);
 //    	PrimalityTester qTest = new PrimalityTester(q, 10);
 //    	primeTester.printList(primeTester.millerRabinPrimeTest(p));
