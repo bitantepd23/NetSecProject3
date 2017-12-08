@@ -13,6 +13,50 @@ public class PrimalityTester {
 		return randBig;
 	}
 	
+	
+	// Author: Corey
+	/*
+	 * Function: extendedEuclid(BigInteger a, BigInteger b)
+	 * Purpose: to compute the private key based upon the user input public key
+	 * a = ⱷ(n)
+	 * b = e
+	 * returns lastx which equals d
+	 */
+	
+	public BigInteger extendedEuclid(BigInteger a, BigInteger b) {	//a = e, b = phi(n)
+
+		//Base Conditions
+		BigInteger x = BigInteger.valueOf(0);
+		BigInteger y = BigInteger.valueOf(1);
+		BigInteger lastx = BigInteger.valueOf(1);
+		BigInteger lasty = BigInteger.valueOf(0);
+		BigInteger temp;
+		
+        while (!b.equals(BigInteger.ZERO))
+        {
+            BigInteger q = a.divide(b);
+            BigInteger r = a.mod(b);
+ 
+            a = b;
+            b = r;
+ 
+            temp = x;
+            x = lastx.subtract(q.multiply(x));
+            lastx = temp;
+ 
+            temp = y;
+            y = lasty.subtract(q.multiply(y));
+            lasty = temp;            
+        }
+        System.out.println("lastx = "+lastx+"\nlasty = "+lasty);
+        if (lastx.compareTo(lasty) > 0)
+        	return lastx;
+        else
+        	return lasty;
+	}
+
+	
+	
 	/*
 	 * Function: millerRabinPrimeTest(BigInteger n, int roundCheck)
 	 * Purpose: to test if BigInteger n is prime over a number of iterations >= 10
@@ -21,8 +65,8 @@ public class PrimalityTester {
 	 * returns lastx which equals d
 	 */
 	 
-	public boolean millerRabinPrimeTest(BigInteger n, int roundCheck) {
-		
+	public boolean millerRabinPrimeTest(BigInteger n) {
+		int roundCheck = 15;
 		int k = 0;					// k>0
 		BigInteger nMinusOne = n.subtract(BigInteger.ONE);
 		BigInteger qOdd = nMinusOne;	
